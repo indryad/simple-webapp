@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: simple-webapp
-  #namespace: webapp
+  namespace: webapp
 spec:
   selector:
     matchLabels:
@@ -13,8 +13,8 @@ spec:
       labels:
         app: simple-webapp
     spec:
-      serviceAccountName: jenkins
-      serviceAccount: jenkins
+      #serviceAccountName: jenkins
+      #serviceAccount: jenkins
       containers:
         - name: simple-webapp
           image: docker.io/atwatanmalikm/webapp:2210150757
