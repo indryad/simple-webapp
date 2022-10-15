@@ -16,7 +16,7 @@ spec:
       serviceAccount: jenkins
       containers:
         - name: simple-webapp
-          image: image-registry.openshift-image-registry.svc:5000/jenkins/webapp:
+          image: docker.io/atwatanmalikm/webapp:2210150757
           ports:
             - containerPort: 80
 ---
@@ -25,21 +25,12 @@ kind: Service
 metadata:
   name: simple-webapp-svc
 spec:
+  type: NodePort
   selector:
     app: simple-webapp
   ports:
     - protocol: TCP
       port: 80
       targetPort: 80
----
-apiVersion: route.openshift.io/v1
-kind: Route
-metadata:
-  name: simple-webapp-route
-spec:
-  path: /
-  to:
-    kind: Service
-    name: simple-webapp-svc
-  port:
-    targetPort: 80
+      nodePort: 30001
+
