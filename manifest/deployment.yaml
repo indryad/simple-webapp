@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: simple-webapp
-  namespace: webapp
+  #namespace: webapp
 spec:
   selector:
     matchLabels:
