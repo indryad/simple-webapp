@@ -79,8 +79,8 @@ pipeline {
           script {
             withCredentials([string(credentialsId: 'argocd-cred', variable: 'ARGOCD_AUTH_TOKEN')]){
                   sh("""
-                  export ARGOCD_SERVER=$ARGOCD_SERVER
-                  export ARGOCD_OPTS=$ARGOCD_OPTS
+                  export ARGOCD_SERVER='$ARGOCD_SERVER'
+                  export ARGOCD_OPTS='$ARGOCD_OPTS'
                   argocd app sync simple-webapp
                   """)
             }
