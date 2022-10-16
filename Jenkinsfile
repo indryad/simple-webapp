@@ -19,13 +19,22 @@ pipeline {
       steps {
         container('webapp-agent') {
           sh """
-          git clone https://github.com/btech-training-team/simple-webapp-manifest.git
-          cd simple-webapp-manifest
-          sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
-          git config --global user.email "atwatanmalikm@gmail.com"
-          git config --global user.name "atwatanmalikm"
-          git add . && git commit -m 'update image tag' && git push
-          """
+            git clone https://github.com/btech-training-team/simple-webapp-manifest.git
+            cd simple-webapp-manifest
+            sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
+            """
+          script {
+            withCredentials([usernamePassword(credentialsId: 'github-cred',
+                 usernameVariable: 'username',
+                 passwordVariable: 'password')]){
+                  sh("""
+                  git config --global user.email "example@main.com"
+                  git config --global user.name "example"
+                  git add . && git commit -m 'update image tag'
+                  git push https://$username:$password@github.com/btech-training-team/simple-webapp-manifest.git
+                  """)
+            }
+          }
         }
       }
     }
