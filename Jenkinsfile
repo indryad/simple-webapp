@@ -18,16 +18,14 @@ pipeline {
     stage('Update manifest') {
       steps {
         container('webapp-agent') {
-          sh """
-            git clone https://github.com/btech-training-team/simple-webapp-manifest.git
-            cd simple-webapp-manifest
-            sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
-            """
           script {
             withCredentials([usernamePassword(credentialsId: 'github-cred',
                  usernameVariable: 'username',
                  passwordVariable: 'password')]){
                   sh("""
+                  git clone https://github.com/btech-training-team/simple-webapp-manifest.git
+                  cd simple-webapp-manifest
+                  sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
                   git config --global user.email "example@main.com"
                   git config --global user.name "example"
                   git add . && git commit -m 'update image tag'
