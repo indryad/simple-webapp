@@ -20,8 +20,10 @@ pipeline {
         container('argocd') {
           sh """
           git clone https://github.com/btech-training-team/simple-webapp-manifest.git
+          cd simple-webapp-manifest
           sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
           ls -la
+          cat  deployment.yaml
           git add . && git commit -m 'update image tag' && git push
           """
         }
