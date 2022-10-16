@@ -15,7 +15,19 @@ pipeline {
         }
       }
     }
-
+    stage('Update manifest') {
+      steps {
+        container('argocd') {
+          sh """
+          git clone https://github.com/btech-training-team/simple-webapp-manifest.git
+          sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
+          ls -la
+          git add . && git commit -m 'update image tag' && git push
+          """
+        }
+      }
+    }
+/*
     stage('Test') {
       steps {
         container('webapp-agent') {
@@ -32,7 +44,7 @@ pipeline {
       }
     }
     
-    stage("build-and-push=image"){
+    stage("Build & Push Image"){
       steps{
         container('kaniko'){
           sh """
@@ -42,5 +54,17 @@ pipeline {
         }
       }
     }
+
+    stage("Update Manifest"){
+      steps{
+        container('kaniko'){
+          sh """
+          /kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` \
+          --verbosity debug --destination docker.io/atwatanmalikm/webapp:$TAG
+          """
+        }
+      }
+    }
+*/
   }
 }
