@@ -12,6 +12,7 @@ pipeline {
       steps {
         container('webapp-agent') {
           sh "echo App Version = $TAG"
+          sh "git --help"
         }
       }
     }
