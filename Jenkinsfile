@@ -22,9 +22,8 @@ pipeline {
           git clone https://github.com/btech-training-team/simple-webapp-manifest.git
           cd simple-webapp-manifest
           sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
-          git config --global user.email "example@mail.com"
-          git config --global user.name "example"
-          ls -la
+          git config --global user.email "atwatanmalikm@gmail.com"
+          git config --global user.name "atwatanmalikm"
           git add . && git commit -m 'update image tag' && git push
           """
         }
