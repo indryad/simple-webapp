@@ -31,7 +31,7 @@ pipeline {
                   git config --global user.email "example@main.com"
                   git config --global user.name "example"
                   git add . && git commit -m 'update image tag'
-                  git push https://$username:$password@github.com/btech-training-team/simple-webapp-manifest.git
+                  git push https://$username:$password@github.com/btech-training-team/simple-webapp-manifest.git main
                   """)
             }
           }
