@@ -62,7 +62,7 @@ pipeline {
     stage('Approval') {
       steps {
          input(
-           message: "Deploy application with ${version} version to production ?",
+           message: "Deploy application with ${TAG} version to production ?",
            ok: 'Yes, deploy it'
          )
       }
