@@ -12,18 +12,19 @@ pipeline {
       steps {
         container('webapp-agent') {
           sh "echo App Version = $TAG"
-          sh "git --help"
         }
       }
     }
     stage('Update manifest') {
       steps {
-        container('argocd') {
+        container('webapp-agent') {
           sh """
-          export ARGOCD_SERVER="10.4.6.10:32218"
-          export ARGOCD_AUTH_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcmdvY2QiLCJzdWIiOiJhZG1pbjphcGlLZXkiLCJuYmYiOjE2NjU4Nzc3MDcsImlhdCI6MTY2NTg3NzcwNywianRpIjoiYzQ2ZTI2MzUtMjEzNy00MWQ5LWEzZDYtM2QwYzBhMGJhNzE2In0.EmyHWykoJfn7icGjtHxtKWhFYThJlNezItZum081oKY
-          export ARGOCD_OPTS="--grpc-web --insecure"
-          argocd app list
+          git clone https://github.com/btech-training-team/simple-webapp-manifest.git
+          cd simple-webapp-manifest
+          sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
+          ls -la
+          cat  deployment.yaml
+          git add . && git commit -m 'update image tag' && git push
           """
         }
       }
