@@ -12,7 +12,7 @@ pipeline {
     // Don't change variables below
     TAG = sh (script: "date +%y%m%d%H%M", returnStdout: true).trim()
     ARGOCD_OPTS = "--grpc-web --insecure"
-    APP_MANIFEST_PATH = sh (script: "echo $APP_MANIFEST_REPO | sed 's/https:\/\/github.com\///g'", returnStdout: true).trim()
+    APP_MANIFEST_PATH = sh (script: "echo $APP_MANIFEST_REPO | sed 's/.*github.com//g'", returnStdout: true).trim()
   }
   
   stages {
@@ -65,7 +65,7 @@ pipeline {
                   git config --global user.email "example@main.com"
                   git config --global user.name "example"
                   git add . && git commit -m 'update image tag'
-                  git push https://$username:$password@github.com/$APP_MANIFEST_PATH main
+                  git push https://$username:$password@github.com$APP_MANIFEST_PATH main
                   """)
             }
           }
