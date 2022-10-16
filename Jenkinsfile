@@ -4,7 +4,15 @@ pipeline {
   }
   
   environment {
+    // Adjust variables below
+    ARGOCD_SERVER = "10.4.6.10:32218"
+    APP_MANIFEST_REPO = "https://github.com/btech-training-team/simple-webapp-manifest.git"
+    IMAGE_NAME = "docker.io/atwatanmalikm/webapp"
+
+    // Don't change variables below
     TAG = sh (script: "date +%y%m%d%H%M", returnStdout: true).trim()
+    ARGOCD_OPTS = "--grpc-web --insecure"
+    APP_MANIFEST_PATH = sh (script: "echo $APP_MANIFEST_REPO | sed 's/https:\/\/github.com\///g'", returnStdout: true).trim()
   }
   
   stages {
@@ -15,28 +23,7 @@ pipeline {
         }
       }
     }
-    stage('Update manifest') {
-      steps {
-        container('webapp-agent') {
-          script {
-            withCredentials([usernamePassword(credentialsId: 'github-cred',
-                 usernameVariable: 'username',
-                 passwordVariable: 'password')]){
-                  sh("""
-                  git clone https://github.com/btech-training-team/simple-webapp-manifest.git
-                  cd simple-webapp-manifest
-                  sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
-                  git config --global user.email "example@main.com"
-                  git config --global user.name "example"
-                  git add . && git commit -m 'update image tag'
-                  git push https://$username:$password@github.com/btech-training-team/simple-webapp-manifest.git main
-                  """)
-            }
-          }
-        }
-      }
-    }
-/*
+
     stage('Test') {
       steps {
         container('webapp-agent') {
@@ -58,22 +45,48 @@ pipeline {
         container('kaniko'){
           sh """
           /kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` \
-          --verbosity debug --destination docker.io/atwatanmalikm/webapp:$TAG
+          --verbosity debug --destination $IMAGE_NAME:$TAG
           """
         }
       }
     }
 
-    stage("Update Manifest"){
-      steps{
-        container('kaniko'){
-          sh """
-          /kaniko/executor --dockerfile `pwd`/Dockerfile --context `pwd` \
-          --verbosity debug --destination docker.io/atwatanmalikm/webapp:$TAG
-          """
+    stage('Update Manifest') {
+      steps {
+        container('webapp-agent') {
+          script {
+            withCredentials([usernamePassword(credentialsId: 'github-cred',
+                 usernameVariable: 'username',
+                 passwordVariable: 'password')]){
+                  sh("""
+                  git clone $APP_MANIFEST_REPO
+                  cd simple-webapp-manifest
+                  sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
+                  git config --global user.email "example@main.com"
+                  git config --global user.name "example"
+                  git add . && git commit -m 'update image tag'
+                  git push https://$username:$password@github.com/$APP_MANIFEST_PATH main
+                  """)
+            }
+          }
         }
       }
     }
-*/
+
+    stage("Sync App ArgoCD"){
+      steps{
+        container('argocd'){
+          script {
+            withCredentials([string(credentialsId: 'argocd-cred', variable: 'ARGOCD_AUTH_TOKEN')]){
+                  sh("""
+                  export ARGOCD_SERVER=$ARGOCD_SERVER
+                  export ARGOCD_OPTS=$ARGOCD_OPTS
+                  argocd app sync simple-webapp
+                  """)
+            }
+          }
+        }
+      }
+    }
   }
 }
