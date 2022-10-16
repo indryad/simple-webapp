@@ -49,6 +49,14 @@ pipeline {
           """
         }
       }
+      post {
+        success {
+           echo "Build & Push Successful"
+        }
+        failure {
+           echo "Build & Push Failed"
+        }
+      }
     }
 
     stage('Approval') {
