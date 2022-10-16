@@ -51,6 +51,15 @@ pipeline {
       }
     }
 
+    stage('Approval') {
+      steps {
+         input(
+           message: "Deploy application with ${version} version to production ?",
+           ok: 'Yes, deploy it'
+         )
+      }
+    }
+
     stage('Update Manifest') {
       steps {
         container('webapp-agent') {
