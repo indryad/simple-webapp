@@ -17,7 +17,7 @@ pipeline {
     }
     stage('Update manifest') {
       steps {
-        container('kaniko') {
+        container('argocd') {
           sh """
           ls -la
           """
