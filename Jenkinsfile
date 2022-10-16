@@ -24,6 +24,7 @@ pipeline {
           sed -i "s/webapp:.*/webapp:$TAG/g" deployment.yaml
           git config --global user.email "example@mail.com"
           git config --global user.name "example"
+          la -la
           git add . && git commit -m 'update image tag' && git push
           """
         }
