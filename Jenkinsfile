@@ -19,7 +19,10 @@ pipeline {
       steps {
         container('argocd') {
           sh """
-          ls -la
+          export ARGOCD_SERVER="10.4.6.10:32218"
+          export ARGOCD_AUTH_TOKEN=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJhcmdvY2QiLCJzdWIiOiJhZG1pbjphcGlLZXkiLCJuYmYiOjE2NjU4Nzc3MDcsImlhdCI6MTY2NTg3NzcwNywianRpIjoiYzQ2ZTI2MzUtMjEzNy00MWQ5LWEzZDYtM2QwYzBhMGJhNzE2In0.EmyHWykoJfn7icGjtHxtKWhFYThJlNezItZum081oKY
+          export ARGOCD_OPTS="--grpc-web --insecure"
+          argocd app list
           """
         }
       }
